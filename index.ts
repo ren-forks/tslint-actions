@@ -1,14 +1,15 @@
 import * as core from "@actions/core"; // tslint:disable-line
-// Currently @actions/github cannot be loaded via import statement due to typing error
-const github = require("@actions/github"); // tslint:disable-line
-import { Context } from "@actions/github/lib/context";
 import * as Octokit from "@octokit/rest";
-import { stripIndent as markdown } from "common-tags";
 import * as fs from "fs";
 import * as glob from "glob";
 import * as path from "path";
+
+import { Context } from "@actions/github/lib/context";
+import { stripIndent as markdown } from "common-tags";
 import { Configuration, Linter, RuleSeverity } from "tslint";
 
+// Currently @actions/github cannot be loaded via import statement due to typing error
+const github = require("@actions/github"); // tslint:disable-line
 const CHECK_NAME = "TSLint Checks";
 
 const SeverityAnnotationLevelMap = new Map<RuleSeverity, "warning" | "failure">([
@@ -119,7 +120,7 @@ const SeverityAnnotationLevelMap = new Map<RuleSeverity, "warning" | "failure">(
         \`\`\`
         </details>
       `.replace("__CONFIG_CONTENT__", JSON.stringify(Configuration.readConfigurationFile(configFileName), null, 2)),
-      annotations,
+      annotations: annotations.slice(0, 50),
     },
   });
 })().catch((e) => {
